@@ -12,3 +12,95 @@ datasource db {
   provider = "postgresql"
 }
 
+/**
+ * Models
+ */
+model Player {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  // Metadata
+  createdAt DateTime @default(now())
+
+  // Relations
+  scores Score[]
+  scenes Scene[]
+
+  @@map("players")
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+model Scene {
+  id          Int        @id @default(autoincrement())
+  title       String     @unique
+  description String
+  difficulty  Difficulty @default(MEDIUM)
+  imageUrl    String
+  previewUrl  String
+
+  // Metadata
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  characters SceneCharacter[]
+  scores     Score[]
+  player     Player?          @relation(fields: [playerId], references: [id])
+  playerId   Int?
+
+  @@map("scenes")
+}
+
+model Character {
+  id        Int    @id @default(autoincrement())
+  name      String
+  avatarUrl String
+
+  // Metadata
+  createdAt DateTime @default(now())
+
+  // Relations
+  scenes SceneCharacter[]
+
+  @@map("characters")
+}
+
+model SceneCharacter {
+  id Int @id @default(autoincrement())
+
+  // Bounding box coordinates are stores as percentages for responsiveness
+  minX Float
+  maxX Float
+  minY Float
+  maxY Float
+
+  // Relations
+  scene       Scene     @relation(fields: [sceneId], references: [id], onDelete: Cascade)
+  sceneId     Int       @unique
+  character   Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+  characterId Int       @unique
+
+  @@unique([sceneId, characterId])
+  @@map("scene_characters")
+}
+
+model Score {
+  id       Int @id @default(autoincrement())
+  duration Int
+
+  // Metadata
+  createdAt DateTime @default(now())
+
+  player   Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  playerId Int
+  scene    Scene  @relation(fields: [sceneId], references: [id], onDelete: Cascade)
+  sceneId  Int
+
+  @@index([sceneId, duration])
+  @@map("scores")
+}
