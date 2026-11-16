@@ -58,7 +58,7 @@ model Scene {
 
 model Character {
   id        Int    @id @default(autoincrement())
-  name      String
+  name      String @unique
   avatarUrl String
 
   // Metadata
@@ -70,6 +70,7 @@ model Character {
   @@map("characters")
 }
 
+// Join table
 model SceneCharacter {
   id Int @id @default(autoincrement())
 
@@ -81,9 +82,9 @@ model SceneCharacter {
 
   // Relations
   scene       Scene     @relation(fields: [sceneId], references: [id], onDelete: Cascade)
-  sceneId     Int       @unique
+  sceneId     Int       
   character   Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
-  characterId Int       @unique
+  characterId Int       
 
   @@unique([sceneId, characterId])
   @@map("scene_characters")
