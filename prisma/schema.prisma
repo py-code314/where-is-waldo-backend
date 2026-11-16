@@ -29,6 +29,7 @@ model Player {
   @@map("players")
 }
 
+// Limit difficulty to 3 values
 enum Difficulty {
   EASY
   MEDIUM
@@ -82,10 +83,11 @@ model SceneCharacter {
 
   // Relations
   scene       Scene     @relation(fields: [sceneId], references: [id], onDelete: Cascade)
-  sceneId     Int       
+  sceneId     Int
   character   Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
-  characterId Int       
+  characterId Int
 
+  // Make the combination unique, not the individual fields
   @@unique([sceneId, characterId])
   @@map("scene_characters")
 }
@@ -102,6 +104,7 @@ model Score {
   scene    Scene  @relation(fields: [sceneId], references: [id], onDelete: Cascade)
   sceneId  Int
 
+  // Create index for faster query results
   @@index([sceneId, duration])
   @@map("scores")
 }
