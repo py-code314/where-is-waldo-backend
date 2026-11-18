@@ -29,6 +29,7 @@ import './config/passport-jwt.js' // JWT strategy for all subsequent log ins
  * -------------- ROUTES ----------------
  */
 app.use('/api/v1/scenes', routes.scenesRouter)
+app.use('/api/v1/test-error', routes.testErrorRouter)
 
 /**
  * -------------- ERROR HANDLER MIDDLEWARE ----------------
