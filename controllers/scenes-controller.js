@@ -1,5 +1,8 @@
 /* -------------------- Prisma -------------------- */
 import { prisma } from '../lib/prisma.js'
+/* -------------------- Errors -------------------- */
+import BadRequestError from '../errors/request-error.js'
+import RecordNotFoundError from '../errors/resource-error.js'
 
 /* Get all scenes */
 async function getAllScenes(req, res, next) {
@@ -41,20 +44,21 @@ async function getScene(req, res, next) {
     const sceneId = Number(req.params.sceneId)
     const isInt = Number.isInteger(sceneId)
 
-   
+    // Make sure sceneId is a number
+    if (!isInt) {
+      const badRequest = new BadRequestError()
+      return next(badRequest)
+    }
 
     const scene = await prisma.scene.findUnique({
       where: {
         id: sceneId,
-
       },
       select: {
         id: true,
         title: true,
-        // description: true,
         difficulty: true,
         imageUrl: true,
-        // previewUrl: true,
         characters: {
           select: {
             character: {
@@ -69,6 +73,14 @@ async function getScene(req, res, next) {
       },
     })
     // console.log('🚀 ~ getScene ~ scene:', scene)
+
+    // Throw error if scene is not found
+    if (!scene) {
+      const invalidScene = new RecordNotFoundError(
+        'The scene you are looking for can not be found.'
+      )
+      return next(invalidScene)
+    }
 
     return res.json({
       success: true,
