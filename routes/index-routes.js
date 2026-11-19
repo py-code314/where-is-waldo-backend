@@ -1,4 +1,5 @@
 import scenesRouter from './scenes-routes.js'
+import sessionsRouter from './session-routes.js'
 import testErrorRouter from './test-error-routes.js'
 
-export { scenesRouter, testErrorRouter }
+export { scenesRouter, sessionsRouter, testErrorRouter }
