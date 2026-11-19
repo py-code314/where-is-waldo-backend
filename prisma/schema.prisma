@@ -42,7 +42,9 @@ model Scene {
   description String
   difficulty  Difficulty @default(MEDIUM)
   imageUrl    String
+  imageAlt    String
   previewUrl  String
+  previewAlt  String
 
   // Metadata
   createdAt DateTime @default(now())

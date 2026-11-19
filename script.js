@@ -13,8 +13,12 @@ async function main() {
         difficulty: 'EASY',
         imageUrl:
           'https://res.cloudinary.com/ddoq6urpb/image/upload/v1794785957/scene-skiing_rv6mpf.webp',
+        imageAlt:
+          "A detailed, hand-drawn Where's Waldo style winter scene of a busy ski resort filled with colorful figures skiing, snowboarding, and playing in the snow among pine trees and wooden cabins",
         previewUrl:
           'https://res.cloudinary.com/ddoq6urpb/image/upload/v1794785860/preview-skiing_e6a4mm.webp',
+        previewAlt:
+          'Winter ski resort thumbnail with skiers on snowy mountains',
 
         characters: {
           create: [
@@ -96,8 +100,12 @@ async function main() {
         difficulty: 'MEDIUM',
         imageUrl:
           'https://res.cloudinary.com/ddoq6urpb/image/upload/v1794785958/scene-space-station_elhlfh.webp',
+        imageAlt:
+          "A detailed, hand-drawn Where's Waldo style space station scene on a rocky surface with large glass domes crowded with colorful people, spaceships flying across a starry black sky, and a large white moon",
         previewUrl:
           'https://res.cloudinary.com/ddoq6urpb/image/upload/v1794785861/preview-space-station_ucpuqj.webp',
+        previewAlt:
+          'Space station thumbnail featuring glass domes and tiny figures against a starry sky',
 
         characters: {
           create: [
@@ -179,8 +187,12 @@ async function main() {
         difficulty: 'HARD',
         imageUrl:
           'https://res.cloudinary.com/ddoq6urpb/image/upload/v1794785959/scene-food-court_t5xxh7.webp',
+        imageAlt:
+          "A detailed, hand-drawn Where's Waldo style medieval feast scene, featuring a dense crowd of colorful figures eating, cooking, and gathering around outdoor banquet tables",
         previewUrl:
           'https://res.cloudinary.com/ddoq6urpb/image/upload/v1794785861/preview-food-court_szifha.webp',
+        previewAlt:
+          'Medieval banquet thumbnail with a massive crowd feasting around long tables',
 
         characters: {
           create: [
