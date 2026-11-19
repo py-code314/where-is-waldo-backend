@@ -55,6 +55,7 @@ model Scene {
   scores     Score[]
   player     Player?          @relation(fields: [playerId], references: [id])
   playerId   Int?
+  sessions   GameSession[]
 
   @@map("scenes")
 }
@@ -109,4 +110,24 @@ model Score {
   // Create index for faster query results
   @@index([sceneId, duration])
   @@map("scores")
+}
+
+enum GameStatus {
+  ACTIVE
+  COMPLETED
+  ABANDONED
+}
+
+model GameSession {
+  id         Int        @id @default(autoincrement())
+  startTime  DateTime   @default(now())
+  finishTime DateTime?
+  foundCharacters Int        @default(0)
+  status     GameStatus @default(ACTIVE)
+
+  // Relations
+  scene   Scene @relation(fields: [sceneId], references: [id], onDelete: Cascade)
+  sceneId Int
+
+  @@map("game_sessions")
 }
