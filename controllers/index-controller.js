@@ -1,3 +1,3 @@
-import {getAllScenes} from './scenes-controller.js'
+import {getAllScenes, getScene} from './scenes-controller.js'
 
-export {getAllScenes}
+export {getAllScenes, getScene}
