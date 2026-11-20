@@ -3,7 +3,7 @@ import { matchedData } from 'express-validator'
 /* -------------------- Prisma -------------------- */
 import { prisma } from '../lib/prisma.js'
 /* -------------------- Errors -------------------- */
-import BadRequestError from '../errors/request-error.js'
+import RecordNotFoundError from '../errors/resource-error.js'
 
 /* Create a game session */
 async function createGameSession(req, res, next) {
@@ -32,13 +32,14 @@ async function createGameSession(req, res, next) {
       },
       select: {
         id: true,
+        status: true
       },
     })
     // console.log('🚀 ~ createGameSession ~ session:', session)
 
     return res.json({
       success: true,
-      session,
+      sessionData: session,
     })
   } catch (err) {
     console.error(err)

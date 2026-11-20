@@ -14,6 +14,7 @@ async function getAllScenes(req, res, next) {
         description: true,
         difficulty: true,
         previewUrl: true,
+        previewAlt: true,
         characters: {
           select: {
             character: {
@@ -59,6 +60,7 @@ async function getScene(req, res, next) {
         title: true,
         difficulty: true,
         imageUrl: true,
+        imageAlt: true,
         characters: {
           select: {
             character: {
