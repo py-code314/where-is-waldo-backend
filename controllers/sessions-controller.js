@@ -52,7 +52,7 @@ async function verifyCoordinates(req, res, next) {
   try {
     const { sceneId, characterId, x, y } = matchedData(req)
 
-    const coordinates = await prisma.sceneCharacter.findUnique({
+    const result = await prisma.sceneCharacter.findUnique({
       where: {
         sceneId_characterId: {
           sceneId,
@@ -72,16 +72,24 @@ async function verifyCoordinates(req, res, next) {
         },
       },
     })
-    // console.log('🚀 ~ verifyCoordinates ~ coordinates:', coordinates)
+    // console.log('🚀 ~ verifyCoordinates ~ result:', result)
 
-    const { character } = coordinates
+    // Throw error if the combo doesn't exist
+    if (!result) {
+      const invalidCombo = new RecordNotFoundError(
+        'The specified character was not found in this scene.'
+      )
+      return next(invalidCombo)
+    }
+
+    const { character } = result
     // Validate click coordinates
     let isMatch = false
     if (
-      x >= coordinates.minX &&
-      x <= coordinates.maxX &&
-      y >= coordinates.minY &&
-      y <= coordinates.maxY
+      x >= result.minX &&
+      x <= result.maxX &&
+      y >= result.minY &&
+      y <= result.maxY
     ) {
       isMatch = true
     }
