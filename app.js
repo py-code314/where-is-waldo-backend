@@ -4,7 +4,7 @@ import express from 'express'
 import cors from 'cors'
 
 import * as routes from './routes/index-routes.js'
-import errorHandler from './middleware/error-handler.js'
+import {errorHandler} from './middleware/index.js'
 
 
 /**

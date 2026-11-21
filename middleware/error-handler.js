@@ -27,16 +27,15 @@ const errorHandler = (err, req, res, next) => {
         errorTitle = 'Missing Data'
         errorCode = 'MISSING_RECORD'
         break
-      
+
       // Null constraint violation
       case 'P2011':
         statusCode = 400
-        errorMsg =
-          'A required field is missing. Please check your input.'
+        errorMsg = 'A required field is missing. Please check your input.'
         errorTitle = 'Missing Information'
         errorCode = 'MISSING_FIELD'
         break
-      
+
       // Table doesn't exist
       case 'P2021':
         statusCode = 500
@@ -58,8 +57,7 @@ const errorHandler = (err, req, res, next) => {
       // Can't reach db server
       case 'P1001':
         statusCode = 503
-        errorMsg =
-          'Unable to connect to the database. Please try again later.'
+        errorMsg = 'Unable to connect to the database. Please try again later.'
         errorTitle = 'Database Offline'
         errorCode = 'DATABASE_UNREACHABLE'
         break
