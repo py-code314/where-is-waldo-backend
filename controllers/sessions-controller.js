@@ -32,7 +32,7 @@ async function createGameSession(req, res, next) {
       },
       select: {
         id: true,
-        status: true
+        status: true,
       },
     })
     // console.log('🚀 ~ createGameSession ~ session:', session)
@@ -49,11 +49,53 @@ async function createGameSession(req, res, next) {
 }
 
 async function verifyCoordinates(req, res, next) {
-  console.log('verify coords')
+  try {
+    const { sceneId, characterId, x, y } = matchedData(req)
 
-  return res.json({
-    success: true,
-  })
-  
+    const coordinates = await prisma.sceneCharacter.findUnique({
+      where: {
+        sceneId_characterId: {
+          sceneId,
+          characterId,
+        },
+      },
+      select: {
+        minX: true,
+        maxX: true,
+        minY: true,
+        maxY: true,
+        character: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    })
+    // console.log('🚀 ~ verifyCoordinates ~ coordinates:', coordinates)
+
+    const { character } = coordinates
+    // Validate click coordinates
+    let isMatch = false
+    if (
+      x >= coordinates.minX &&
+      x <= coordinates.maxX &&
+      y >= coordinates.minY &&
+      y <= coordinates.maxY
+    ) {
+      isMatch = true
+    }
+
+    return res.json({
+      success: true,
+      isMatch,
+      characterData: character,
+    })
+  } catch (err) {
+    console.error(err)
+
+    return next(err)
+  }
 }
+
 export { createGameSession, verifyCoordinates }
