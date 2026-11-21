@@ -37,7 +37,7 @@ async function createGameSession(req, res, next) {
     })
     // console.log('🚀 ~ createGameSession ~ session:', session)
 
-    return res.json({
+    return res.status(201).json({
       success: true,
       sessionData: session,
     })
@@ -48,4 +48,12 @@ async function createGameSession(req, res, next) {
   }
 }
 
-export { createGameSession }
+async function verifyCoordinates(req, res, next) {
+  console.log('verify coords')
+
+  return res.json({
+    success: true,
+  })
+  
+}
+export { createGameSession, verifyCoordinates }
