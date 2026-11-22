@@ -49,9 +49,8 @@ async function createGameSession(req, res, next) {
 }
 
 async function verifyCoordinates(req, res, next) {
+  const { sceneId, characterId, x, y, sessionId } = matchedData(req)
   try {
-    const { sceneId, characterId, x, y } = matchedData(req)
-
     const result = await prisma.sceneCharacter.findUnique({
       where: {
         sceneId_characterId: {
@@ -73,13 +72,21 @@ async function verifyCoordinates(req, res, next) {
       },
     })
     // console.log('🚀 ~ verifyCoordinates ~ result:', result)
+    // const error =  new Error(
+    //   'Requested game does not exist. Please choose a different game.'
+    // )
+    // error.errorCode = 'NETWORK_TIMEOUT'
+    // throw error
 
-    // Throw error if the combo doesn't exist
+    /* Throw error (don't return) if the combo doesn't exist
+    so that 'catch' block catches the error and changes game 
+    session status to 'ABANDONED' */
     if (!result) {
       const invalidCombo = new RecordNotFoundError(
         'The specified character was not found in this scene.'
       )
-      return next(invalidCombo)
+      // return next(invalidCombo)
+      throw invalidCombo
     }
 
     const { character } = result
@@ -100,7 +107,24 @@ async function verifyCoordinates(req, res, next) {
       characterData: character,
     })
   } catch (err) {
-    console.error(err)
+    console.error('Verify Error:', err)
+
+    /* Change game session status to 'ABANDONED' if there is
+    any critical backend error during the play */
+    try {
+      await prisma.gameSession.update({
+        where: {
+          id: sessionId,
+        },
+        data: {
+          status: 'ABANDONED',
+        },
+      })
+    } catch (error) {
+      console.error('Update Error:', error)
+
+      return next(error)
+    }
 
     return next(err)
   }

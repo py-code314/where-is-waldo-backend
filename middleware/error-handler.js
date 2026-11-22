@@ -2,7 +2,7 @@ import { Prisma } from '../generated/prisma/index.js'
 
 /* Express error handler middleware */
 const errorHandler = (err, req, res, next) => {
-  // console.log("🚀 ~ errorHandler ~ err:", err)
+  // console.log('🚀 ~ errorHandler ~ err:', err)
   /* Check if headers have already been sent to avoid "Can't set
    headers after they are sent" error */
   if (res.headersSent) {
