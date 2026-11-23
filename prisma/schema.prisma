@@ -119,11 +119,11 @@ enum GameStatus {
 }
 
 model GameSession {
-  id         Int        @id @default(autoincrement())
-  startTime  DateTime   @default(now())
-  finishTime DateTime?
-  foundCharacters Int        @default(0)
-  status     GameStatus @default(ACTIVE)
+  id              Int        @id @default(autoincrement())
+  startTime       DateTime   @default(now())
+  finishTime      DateTime?
+  foundCharacters Int[]
+  status          GameStatus @default(ACTIVE)
 
   // Relations
   scene   Scene @relation(fields: [sceneId], references: [id], onDelete: Cascade)

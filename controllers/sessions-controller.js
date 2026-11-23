@@ -5,6 +5,7 @@ import { prisma } from '../lib/prisma.js'
 /* -------------------- Errors -------------------- */
 import RecordNotFoundError from '../errors/resource-error.js'
 
+// TODO: Change session status if player refreshes the page
 /* Create a game session */
 async function createGameSession(req, res, next) {
   try {
@@ -49,7 +50,7 @@ async function createGameSession(req, res, next) {
 }
 
 async function verifyCoordinates(req, res, next) {
-  const { sceneId, characterId, x, y, sessionId } = matchedData(req)
+  const { sceneId, characterId, clickX, clickY, sessionId } = matchedData(req)
   try {
     const result = await prisma.sceneCharacter.findUnique({
       where: {
@@ -93,18 +94,50 @@ async function verifyCoordinates(req, res, next) {
     // Validate click coordinates
     let isMatch = false
     if (
-      x >= result.minX &&
-      x <= result.maxX &&
-      y >= result.minY &&
-      y <= result.maxY
+      clickX >= result.minX &&
+      clickX <= result.maxX &&
+      clickY >= result.minY &&
+      clickY <= result.maxY
     ) {
       isMatch = true
+    }
+
+    // Save character id in sessions table
+    /* Gonna loop through 'foundCharacters' array show a check mark
+    next to the matched characters on frontend */
+    let updatedCharacters = []
+    // If it's a match update and get the array in a single query
+    if (isMatch) {
+      updatedCharacters = await prisma.gameSession.update({
+        where: {
+          id: sessionId,
+        },
+        data: {
+          foundCharacters: {
+            push: character.id,
+          },
+        },
+        select: {
+          foundCharacters: true,
+        },
+      })
+    } else {
+      // Just get the array if it's not a match
+      updatedCharacters = await prisma.gameSession.findUnique({
+        where: {
+          id: sessionId,
+        },
+        select: {
+          foundCharacters: true,
+        },
+      })
     }
 
     return res.json({
       success: true,
       isMatch,
       characterData: character,
+      foundCharacters: updatedCharacters.foundCharacters,
     })
   } catch (err) {
     console.error('Verify Error:', err)
