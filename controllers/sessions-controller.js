@@ -102,13 +102,15 @@ async function verifyCoordinates(req, res, next) {
       isMatch = true
     }
 
-    // Save character id in sessions table
+    // Save character id in session table
     /* Gonna loop through 'foundCharacters' array show a check mark
     next to the matched characters on frontend */
-    let updatedCharacters = []
-    // If it's a match update and get the array in a single query
+    let matchedCharacters = null
+    let isGameOver = false
+
     if (isMatch) {
-      updatedCharacters = await prisma.gameSession.update({
+      // If it's a match update foundCharacters array and return it in a single query
+      matchedCharacters = await prisma.gameSession.update({
         where: {
           id: sessionId,
         },
@@ -119,11 +121,33 @@ async function verifyCoordinates(req, res, next) {
         },
         select: {
           foundCharacters: true,
+          scene: {
+            include: {
+              characters: true,
+            },
+          },
         },
       })
+
+      // Update 'isGameOver' on backend for security
+      const sceneCharactersLength = matchedCharacters.scene.characters.length
+      const updatedCharactersLength = matchedCharacters.foundCharacters.length
+      isGameOver = updatedCharactersLength >= sceneCharactersLength
+
+      if (isGameOver) {
+        await prisma.gameSession.update({
+          where: {
+            id: sessionId,
+          },
+          data: {
+            finishTime: new Date(),
+            status: 'COMPLETED',
+          },
+        })
+      }
     } else {
       // Just get the array if it's not a match
-      updatedCharacters = await prisma.gameSession.findUnique({
+      matchedCharacters = await prisma.gameSession.findUnique({
         where: {
           id: sessionId,
         },
@@ -137,7 +161,8 @@ async function verifyCoordinates(req, res, next) {
       success: true,
       isMatch,
       characterData: character,
-      foundCharacters: updatedCharacters.foundCharacters,
+      foundCharacters: matchedCharacters.foundCharacters,
+      isGameOver,
     })
   } catch (err) {
     console.error('Verify Error:', err)
